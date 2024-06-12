@@ -14,3 +14,9 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+## 使用しているライブラリ
+* flutter_riverpod
+
+## 参考にするサイト
+* flutterでnfcの読み取りをする方法 https://zenn.dev/koudai/articles/ef305544e5e79d
