@@ -41,7 +41,7 @@ class Home extends ConsumerWidget {
                   ),
                 ),
                 onPressed: () {
-                  indialog(context);
+                  indialog(context,ref);
                 },
                 child: const Text("入室",
                     style: TextStyle(fontSize: 90, color: Colors.white)),
@@ -63,7 +63,7 @@ class Home extends ConsumerWidget {
                   ),
                 ),
                 onPressed: () {
-                  outdialog(context);
+                  outdialog(context,ref);
                 },
                 child: const Text("退室",
                     style: TextStyle(fontSize: 90, color: Colors.white)),

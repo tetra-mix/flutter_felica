@@ -1,6 +1,10 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
+import '/provider/provider.dart';
 
-void outdialog(BuildContext context) {
+void outdialog(BuildContext context, WidgetRef ref) {
+  
+
   showDialog<void>(
     context: context,
     barrierDismissible: false, // (追加)ユーザーがモーダルを閉じないようにする
