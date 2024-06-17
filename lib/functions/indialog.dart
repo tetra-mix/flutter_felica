@@ -79,7 +79,6 @@ class _CustomDialogState extends State<CustomDialog> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                
               ],
             ),
           ),
@@ -94,22 +93,37 @@ Future<void> _onNfcDiscovered(NfcTag tag, BuildContext context) async {
       final idm = nfcF['identifier']
           .map((e) => e.toRadixString(16).padLeft(2, '0'))
           .join('');
-      
 
       print(tag.data);
       print(idm);
-      
+
+      NfcManager.instance.stopSession();
+
       await showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             title: const Text("入室"),
-            content:  Column(
+            content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text("読み取り成功"),
-                Text("ID: $idm"),
-                Text("Date: "),
+                const Text("読み取り成功", style: TextStyle(fontSize: 25)),
+                Table(
+                  children: <TableRow>[
+                    TableRow(
+                      children: <Widget>[
+                        const Text("ID:", style: TextStyle(fontSize: 20)),
+                        Text("$idm", style: const TextStyle(fontSize: 20)),
+                      ],
+                    ),
+                    TableRow(
+                      children: <Widget>[
+                         const Text("Date:", style: TextStyle(fontSize: 20)),
+                        Text(""),
+                      ],
+                    ),
+                  ],
+                ),
               ],
             ),
             actions: [
@@ -125,8 +139,29 @@ Future<void> _onNfcDiscovered(NfcTag tag, BuildContext context) async {
       Navigator.pop(context);
     }
   } catch (e) {
-    print(e);
-  } finally {
+
     NfcManager.instance.stopSession();
-  }
+    
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("退室"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text("エラー"),
+              Text("error: ${e}"),
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        );
+      },
+    );
+  } 
 }

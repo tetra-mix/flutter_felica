@@ -59,9 +59,23 @@ Future<void> _onNfcDiscovered(NfcTag tag, BuildContext context) async {
             content:  Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text("読み取り成功"),
-                Text("ID: $idm"),
-                Text("Date: "),
+                const Text("読み取り成功", style: TextStyle(fontSize: 25)),
+                Table(
+                  children: <TableRow>[
+                    TableRow(
+                      children: <Widget>[
+                        const Text("ID:", style: TextStyle(fontSize: 20)),
+                        Text("$idm", style: const TextStyle(fontSize: 20)),
+                      ],
+                    ),
+                    TableRow(
+                      children: <Widget>[
+                         const Text("Date:", style: TextStyle(fontSize: 20)),
+                        Text(""),
+                      ],
+                    ),
+                  ],
+                ),
               ],
             ),
             actions: [
