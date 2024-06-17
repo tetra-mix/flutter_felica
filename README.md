@@ -17,6 +17,7 @@ samples, guidance on mobile development, and a full API reference.
 
 ## 使用しているライブラリ
 * flutter_riverpod
-
+* nfc_manager
+* 
 ## 参考にするサイト
 * flutterでnfcの読み取りをする方法 https://zenn.dev/koudai/articles/ef305544e5e79d

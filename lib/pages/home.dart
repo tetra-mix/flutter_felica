@@ -5,6 +5,7 @@ import '/functions/outdialog.dart';
 
 class Home extends ConsumerWidget {
   const Home({super.key});
+  
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -41,7 +42,7 @@ class Home extends ConsumerWidget {
                   ),
                 ),
                 onPressed: () {
-                  indialog(context,ref);
+                  indialog(context);
                 },
                 child: const Text("入室",
                     style: TextStyle(fontSize: 90, color: Colors.white)),
@@ -63,7 +64,7 @@ class Home extends ConsumerWidget {
                   ),
                 ),
                 onPressed: () {
-                  outdialog(context,ref);
+                  outdialog(context);
                 },
                 child: const Text("退室",
                     style: TextStyle(fontSize: 90, color: Colors.white)),

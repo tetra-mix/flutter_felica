@@ -1,42 +1,104 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:flutter/material.dart';
-import '/provider/provider.dart';
+import 'package:nfc_manager/nfc_manager.dart';
 
-void outdialog(BuildContext context, WidgetRef ref) {
-  
-
+void outdialog(BuildContext context) {
   showDialog<void>(
-    context: context,
-    barrierDismissible: false, // (追加)ユーザーがモーダルを閉じないようにする
-    builder: (BuildContext context) {
-      return GestureDetector(
+      context: context,
+      barrierDismissible: false, // (追加)ユーザーがモーダルを閉じないようにする
+      builder: (BuildContext context) {
+        return CustomDialog();
+      });
+}
+
+class CustomDialog extends StatelessWidget{
+
+  @override
+  Widget build(BuildContext context) {
+
+    //NFCの読み取りを開始
+    NfcManager.instance.startSession(
+        onDiscovered: (NfcTag tag) => _onNfcDiscovered(tag, context));
+
+    return GestureDetector(
         onTap: () => Navigator.pop(context),
         child: Dialog(
           child: Container(
             width: double.infinity,
             padding: const EdgeInsets.all(20.0),
-            child: Column(
+            child: const Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                 const Text('ボタンを押してからICカードをタッチしてください。',
+                SizedBox(height: 50),
+                Text("ICカードをタッチしてください!",
                     style: TextStyle(fontSize: 30)),
-                 const SizedBox(height: 100),
-                 ElevatedButton(
-                  onPressed: ()=>{},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.indigo,
-                  ),
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    child: const Text("ICカードを読み取る",
-                        style: TextStyle(fontSize: 30, color: Colors.white)),
-                  ),
-                )
+                SizedBox(height: 50),
               ],
             ),
           ),
-        ),
+        ));
+  }
+}
+
+Future<void> _onNfcDiscovered(NfcTag tag, BuildContext context) async {
+  try {
+    final nfcF = tag.data['nfcf']; // FeliCaはNFC-Fプロトコルを使用します
+    if (nfcF != null) {
+      final idm = nfcF['identifier']
+          .map((e) => e.toRadixString(16).padLeft(2, '0'))
+          .join('');
+
+      print(tag.data);
+      print(idm);
+      
+      await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("退室"),
+            content:  Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text("読み取り成功"),
+                Text("ID: $idm"),
+                Text("Date: "),
+              ],
+            ),
+            actions: [
+              TextButton(
+                child: const Text("OK"),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          );
+        },
       );
-    },
-  );
+
+      Navigator.pop(context);
+    }
+  } catch (e) {
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("退室"),
+            content:  Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text("エラー"),
+                Text("error: ${e}"),
+              ],
+            ),
+            actions: [
+              TextButton(
+                child: const Text("OK"),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          );
+        },
+      );
+  } finally {
+    NfcManager.instance.stopSession();
+  }
 }
