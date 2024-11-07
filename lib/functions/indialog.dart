@@ -88,7 +88,8 @@ class _CustomDialogState extends State<CustomDialog> {
   }
 }
 
-Future<void> _onNfcDiscovered(NfcTag tag, BuildContext context, int counter) async {
+Future<void> _onNfcDiscovered(
+    NfcTag tag, BuildContext context, int counter) async {
   try {
     final nfcF = tag.data['nfcf']; // FeliCaはNFC-Fプロトコルを使用します
     if (nfcF != null) {
@@ -99,7 +100,8 @@ Future<void> _onNfcDiscovered(NfcTag tag, BuildContext context, int counter) asy
       print(tag.data);
       print(idm);
 
-      var response = await http.get(Uri.parse("https://script.google.com/macros/s/AKfycbzM4czXSMWQpafQiOewArYOrBW-QHf5nukrnmJs3GKwaaLYDt1HcdXEWKPyHT-9ibbViw/exec?uuid=${idm}&io=0&people=${counter}"));
+      var response = await http.get(Uri.parse(
+          "https://script.google.com/macros/s/AKfycbzM4czXSMWQpafQiOewArYOrBW-QHf5nukrnmJs3GKwaaLYDt1HcdXEWKPyHT-9ibbViw/exec?uuid=${idm}&io=0&people=${counter}"));
       var json = jsonDecode(response.body);
       print(counter);
       String msg = json["message"];
@@ -115,13 +117,13 @@ Future<void> _onNfcDiscovered(NfcTag tag, BuildContext context, int counter) asy
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text("読み取り成功", style: TextStyle(fontSize: 25)),
+                Text("${msg}", style: const TextStyle(fontSize: 30)),
                 Table(
                   children: <TableRow>[
-                     TableRow(
+                    TableRow(
                       children: <Widget>[
-                         const Text("Message:", style: TextStyle(fontSize: 20)),
-                         Text("${msg}", style: const TextStyle(fontSize: 20)),
+                        const Text("ID:", style: TextStyle(fontSize: 20)),
+                        Text("$idm", style: const TextStyle(fontSize: 20)),
                       ],
                     ),
                   ],
@@ -141,9 +143,8 @@ Future<void> _onNfcDiscovered(NfcTag tag, BuildContext context, int counter) asy
       Navigator.pop(context);
     }
   } catch (e) {
-
     NfcManager.instance.stopSession();
-    
+
     await showDialog(
       context: context,
       builder: (context) {
@@ -165,5 +166,5 @@ Future<void> _onNfcDiscovered(NfcTag tag, BuildContext context, int counter) asy
         );
       },
     );
-  } 
+  }
 }

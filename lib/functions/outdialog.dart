@@ -12,11 +12,9 @@ void outdialog(BuildContext context) {
       });
 }
 
-class CustomDialog extends StatelessWidget{
-
+class CustomDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     //NFCの読み取りを開始
     NfcManager.instance.startSession(
         onDiscovered: (NfcTag tag) => _onNfcDiscovered(tag, context));
@@ -31,8 +29,7 @@ class CustomDialog extends StatelessWidget{
               mainAxisSize: MainAxisSize.min,
               children: [
                 SizedBox(height: 50),
-                Text("ICカードをタッチしてください!",
-                    style: TextStyle(fontSize: 30)),
+                Text("ICカードをタッチしてください!", style: TextStyle(fontSize: 30)),
                 SizedBox(height: 50),
               ],
             ),
@@ -52,32 +49,27 @@ Future<void> _onNfcDiscovered(NfcTag tag, BuildContext context) async {
       print(tag.data);
       print(idm);
 
-      var response = await http.get(Uri.parse("https://script.google.com/macros/s/AKfycbzM4czXSMWQpafQiOewArYOrBW-QHf5nukrnmJs3GKwaaLYDt1HcdXEWKPyHT-9ibbViw/exec?uuid=${idm}&io=1"));
+      var response = await http.get(Uri.parse(
+          "https://script.google.com/macros/s/AKfycbzM4czXSMWQpafQiOewArYOrBW-QHf5nukrnmJs3GKwaaLYDt1HcdXEWKPyHT-9ibbViw/exec?uuid=${idm}&io=1"));
       var json = jsonDecode(response.body);
       String msg = json["message"];
       print(msg);
-      
+
       await showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             title: const Text("退室"),
-            content:  Column(
+            content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text("読み取り成功", style: TextStyle(fontSize: 25)),
+                Text("${msg}", style: const TextStyle(fontSize: 30)),
                 Table(
                   children: <TableRow>[
                     TableRow(
                       children: <Widget>[
                         const Text("ID:", style: TextStyle(fontSize: 20)),
                         Text("$idm", style: const TextStyle(fontSize: 20)),
-                      ],
-                    ),
-                      TableRow(
-                      children: <Widget>[
-                         const Text("Message:", style: TextStyle(fontSize: 20)),
-                         Text("${msg}", style: const TextStyle(fontSize: 20)),
                       ],
                     ),
                   ],
@@ -98,26 +90,26 @@ Future<void> _onNfcDiscovered(NfcTag tag, BuildContext context) async {
     }
   } catch (e) {
     await showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text("退室"),
-            content:  Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text("エラー"),
-                Text("error: ${e}"),
-              ],
-            ),
-            actions: [
-              TextButton(
-                child: const Text("OK"),
-                onPressed: () => Navigator.pop(context),
-              ),
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("退室"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text("エラー"),
+              Text("error: ${e}"),
             ],
-          );
-        },
-      );
+          ),
+          actions: [
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        );
+      },
+    );
   } finally {
     NfcManager.instance.stopSession();
   }
