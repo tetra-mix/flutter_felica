@@ -1,6 +1,7 @@
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:nfc_manager/nfc_manager.dart';
+import 'package:http/http.dart' as http;
 
 void outdialog(BuildContext context) {
   showDialog<void>(
@@ -50,6 +51,11 @@ Future<void> _onNfcDiscovered(NfcTag tag, BuildContext context) async {
 
       print(tag.data);
       print(idm);
+
+      var response = await http.get(Uri.parse("https://script.google.com/macros/s/AKfycbzM4czXSMWQpafQiOewArYOrBW-QHf5nukrnmJs3GKwaaLYDt1HcdXEWKPyHT-9ibbViw/exec?uuid=${idm}&io=1"));
+      var json = jsonDecode(response.body);
+      String msg = json["message"];
+      print(msg);
       
       await showDialog(
         context: context,
@@ -68,10 +74,10 @@ Future<void> _onNfcDiscovered(NfcTag tag, BuildContext context) async {
                         Text("$idm", style: const TextStyle(fontSize: 20)),
                       ],
                     ),
-                    TableRow(
+                      TableRow(
                       children: <Widget>[
-                         const Text("Date:", style: TextStyle(fontSize: 20)),
-                        Text(""),
+                         const Text("Message:", style: TextStyle(fontSize: 20)),
+                         Text("${msg}", style: const TextStyle(fontSize: 20)),
                       ],
                     ),
                   ],

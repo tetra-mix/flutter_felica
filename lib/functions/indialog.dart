@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:nfc_manager/nfc_manager.dart';
+import 'package:http/http.dart' as http;
 
 void indialog(BuildContext context) {
   showDialog<void>(
@@ -23,7 +25,7 @@ class _CustomDialogState extends State<CustomDialog> {
   Widget build(BuildContext context) {
     //NFCの読み取りを開始
     NfcManager.instance.startSession(
-        onDiscovered: (NfcTag tag) => _onNfcDiscovered(tag, context));
+        onDiscovered: (NfcTag tag) => _onNfcDiscovered(tag, context, _counter));
 
     return GestureDetector(
         onTap: () => Navigator.pop(context),
@@ -86,7 +88,7 @@ class _CustomDialogState extends State<CustomDialog> {
   }
 }
 
-Future<void> _onNfcDiscovered(NfcTag tag, BuildContext context) async {
+Future<void> _onNfcDiscovered(NfcTag tag, BuildContext context, int counter) async {
   try {
     final nfcF = tag.data['nfcf']; // FeliCaはNFC-Fプロトコルを使用します
     if (nfcF != null) {
@@ -96,6 +98,12 @@ Future<void> _onNfcDiscovered(NfcTag tag, BuildContext context) async {
 
       print(tag.data);
       print(idm);
+
+      var response = await http.get(Uri.parse("https://script.google.com/macros/s/AKfycbzM4czXSMWQpafQiOewArYOrBW-QHf5nukrnmJs3GKwaaLYDt1HcdXEWKPyHT-9ibbViw/exec?uuid=${idm}&io=0&people=${counter}"));
+      var json = jsonDecode(response.body);
+      print(counter);
+      String msg = json["message"];
+      print(msg);
 
       NfcManager.instance.stopSession();
 
@@ -110,16 +118,10 @@ Future<void> _onNfcDiscovered(NfcTag tag, BuildContext context) async {
                 const Text("読み取り成功", style: TextStyle(fontSize: 25)),
                 Table(
                   children: <TableRow>[
-                    TableRow(
+                     TableRow(
                       children: <Widget>[
-                        const Text("ID:", style: TextStyle(fontSize: 20)),
-                        Text("$idm", style: const TextStyle(fontSize: 20)),
-                      ],
-                    ),
-                    TableRow(
-                      children: <Widget>[
-                         const Text("Date:", style: TextStyle(fontSize: 20)),
-                        Text(""),
+                         const Text("Message:", style: TextStyle(fontSize: 20)),
+                         Text("${msg}", style: const TextStyle(fontSize: 20)),
                       ],
                     ),
                   ],
